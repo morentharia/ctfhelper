@@ -8,6 +8,7 @@ import (
 	"github.com/go-rod/rod"
 	"github.com/go-rod/rod/lib/launcher"
 	"github.com/go-rod/rod/lib/proto"
+	"github.com/gookit/color"
 	"github.com/sirupsen/logrus"
 )
 
@@ -24,7 +25,9 @@ func main() {
 	js := `function log(msg){fetch("/challengehelperlog?msg="+msg)}`
 
 	go b.HijackRequests().MustAdd("*/challengehelperlog*", func(h *rod.Hijack) {
-		fmt.Printf("%s\n", h.Request.URL().Query().Get("msg"))
+		// fmt.Printf("%s\n", h.Request.URL().Query().Get("msg"))
+		color.Cyan.Printf("%s\n", h.Request.URL().Query().Get("msg"))
+
 		h.Response.SetBody("")
 	}).Run()
 

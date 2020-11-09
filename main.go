@@ -22,7 +22,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	js := `function log(msg){fetch("/challengehelperlog?msg="+msg)}`
+	js := `window.log = function log(msg){fetch("/challengehelperlog?msg="+msg)}`
 
 	go b.HijackRequests().MustAdd("*/challengehelperlog*", func(h *rod.Hijack) {
 		// fmt.Printf("%s\n", h.Request.URL().Query().Get("msg"))
@@ -49,6 +49,7 @@ func main() {
 			return
 		}
 		p.MustEvalOnNewDocument(js)
+		// TODO eval window.location
 		p.Navigate(newLoaction)
 		p.WaitLoad()
 		fmt.Printf("%s\n", p.MustEval("document.documentElement.innerHTML").String())
@@ -59,4 +60,6 @@ func main() {
 			fmt.Printf("%-04d %s %s\n", i, p.TargetID, p.MustEval("()=>document.location.href"))
 		}
 	}
+
+	select {}
 }
